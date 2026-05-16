@@ -1,0 +1,28 @@
+﻿{
+    "repoPath":  "E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness",
+    "ranAt":  "2026-05-15T10:24:23",
+    "includeAudit":  false,
+    "includeDocker":  false,
+    "results":  [
+                    {
+                        "label":  "powershell:verify-project",
+                        "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\\scripts\\verify-project.ps1",
+                        "workingDirectory":  "E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness",
+                        "startedAt":  "2026-05-15T10:24:21",
+                        "exitCode":  0,
+                        "durationSeconds":  0.33,
+                        "status":  "passed",
+                        "outputTail":  "Project verification passed: E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\r\n"
+                    },
+                    {
+                        "label":  "powershell:test-harness-smoke",
+                        "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\\scripts\\test-harness-smoke.ps1",
+                        "workingDirectory":  "E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness",
+                        "startedAt":  "2026-05-15T10:24:22",
+                        "exitCode":  0,
+                        "durationSeconds":  1.69,
+                        "status":  "passed",
+                        "outputTail":  "Project verification passed: E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\r\nCreated review session: E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\\.tmp\\smoke-reports\\smoke-session\r\nReview ID: CHR-smoke-session\r\nWrote repo facts to: E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\\.tmp\\smoke\\facts.json\r\nWrote repo facts to: E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\\.tmp\\smoke\\facts-absolute.json\r\nWrote history summary: E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\\.tmp\\smoke\\history.md\r\nWrote history summary: E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness\\.tmp\\smoke\\empty-history.md\r\nHarness smoke test passed.\r\n"
+                    }
+                ]
+}

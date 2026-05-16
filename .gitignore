@@ -1,0 +1,34 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+!.vscode/extensions.json
+
+# Logs and generated reports
+*.log
+reports/
+tmp/
+.tmp/
+
+# Keep curated sample review sessions (artifacts may include .log files used as evidence).
+!code-health-reports/
+!code-health-reports/**
+!code-health-reports/**/*.log
+
+# Package managers
+node_modules/
+.pnpm-store/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build outputs
+dist/
+build/
+coverage/

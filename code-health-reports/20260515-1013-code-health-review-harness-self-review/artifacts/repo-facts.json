@@ -1,0 +1,51 @@
+﻿{
+    "repoPath":  "E:\\AI_project\\VSCODE\\Shelf-Product-Management-System\\code-health-review-harness",
+    "collectedAt":  "2026-05-15T10:14:17",
+    "git":  {
+                "branch":  "main",
+                "statusShort":  "?? ./",
+                "diffStat":  ""
+            },
+    "fileCount":  30,
+    "extensionSummary":  [
+                             {
+                                 "extension":  ".md",
+                                 "Count":  21
+                             },
+                             {
+                                 "extension":  ".ps1",
+                                 "Count":  7
+                             },
+                             {
+                                 "extension":  ".gitignore",
+                                 "Count":  1
+                             },
+                             {
+                                 "extension":  ".yml",
+                                 "Count":  1
+                             }
+                         ],
+    "manifests":  [
+
+                  ],
+    "workflows":  [
+                      ".github\\workflows\\validate.yml"
+                  ],
+    "docs":  [
+                 "CHANGELOG.md",
+                 "CONTRIBUTING.md",
+                 "README.md",
+                 "SECURITY.md",
+                 "docs\\architecture.md",
+                 "docs\\github-repo-checklist.md",
+                 "docs\\maintenance.md",
+                 "docs\\roadmap.md",
+                 "docs\\usage.md"
+             ],
+    "tests":  [
+
+              ],
+    "packageScripts":  [
+
+                       ]
+}

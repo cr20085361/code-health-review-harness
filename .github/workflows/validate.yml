@@ -1,0 +1,16 @@
+name: Validate Harness
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify project structure
+        shell: pwsh
+        run: .\scripts\verify-project.ps1

@@ -1,0 +1,159 @@
+﻿{
+    "schema_version":  "1.0",
+    "review_id":  "CHR-20260515-1013-code-health-review-harness-self-review",
+    "repo":  "code-health-review-harness",
+    "created_at":  "2026-05-15T10:14:09",
+    "findings":  [
+                     {
+                         "id":  "CHR-20260515-001",
+                         "severity":  "Medium",
+                         "dimension":  "Operations and delivery",
+                         "title":  "collect-repo-facts absolute OutputPath fails",
+                         "status":  "verified-closed",
+                         "confidence":  "High",
+                         "evidence":  [
+                                           {
+                                               "type":  "file",
+                                               "path":  "skills/code-health-review-harness/scripts/collect-repo-facts.ps1",
+                                               "line":  172,
+                                               "note":  "OutputPath is always joined with the current location before GetFullPath."
+                                           },
+                                           {
+                                               "type":  "command",
+                                               "path":  "command-log.md",
+                                               "note":  "Absolute OutputPath reproduction failed with NotSupportedException."
+                                           }
+                                       ],
+                         "impact":  "Users who pass an absolute artifact path can hit the same path-format failure previously fixed in summarize-review-history.ps1, reducing trust in report persistence automation.",
+                         "recommendation":  "Extract the Resolve-InputPath helper pattern into collect-repo-facts.ps1 and add smoke coverage for absolute OutputPath.",
+                         "verification_ids":  [
+                                                  "VER-20260515-001"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+                                       "summarize-review-history.ps1 absolute path behavior passed in this review.",
+                                       "Verified closed on 2026-05-15: absolute OutputPath now writes and parses successfully."
+                                   ]
+                     },
+                     {
+                         "id":  "CHR-20260515-002",
+                         "severity":  "Medium",
+                         "dimension":  "Testing and quality gates",
+                         "title":  "run-safe-checks does not discover PowerShell project validation scripts",
+                         "status":  "verified-closed",
+                         "confidence":  "High",
+                         "evidence":  [
+                                           {
+                                               "type":  "artifact",
+                                               "path":  "artifacts/safe-checks.json",
+                                               "note":  "results is an empty array for this PowerShell/documentation project."
+                                           },
+                                           {
+                                               "type":  "file",
+                                               "path":  "skills/code-health-review-harness/scripts/run-safe-checks.ps1",
+                                               "note":  "Discovery covers package.json scripts, Python tests, and optional Docker config, but not repository-defined PowerShell validation scripts."
+                                           }
+                                       ],
+                         "impact":  "A review can report no safe checks even when the repository has real validation entry points such as verify-project.ps1 and test-harness-smoke.ps1.",
+                         "recommendation":  "Teach run-safe-checks.ps1 to detect and run conservative PowerShell validation scripts, or add a documented allowlist/config file for repo-specific checks.",
+                         "verification_ids":  [
+                                                  "VER-20260515-002"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+                                       "Verified closed on 2026-05-15: run-safe-checks now reports powershell:verify-project and powershell:test-harness-smoke as passed in direct execution."
+                                   ]
+                     },
+                     {
+                         "id":  "CHR-20260515-003",
+                         "severity":  "Medium",
+                         "dimension":  "Operations and delivery",
+                         "title":  "install-user-skill WhatIf prints a misleading success message",
+                         "status":  "verified-closed",
+                         "confidence":  "High",
+                         "evidence":  [
+                                           {
+                                               "type":  "file",
+                                               "path":  "scripts/install-user-skill.ps1",
+                                               "line":  60,
+                                               "note":  "Installed skill message is printed outside the ShouldProcess install branch."
+                                           },
+                                           {
+                                               "type":  "command",
+                                               "path":  "command-log.md",
+                                               "note":  "-WhatIf printed WhatIf operations and then Installed skill to, although no copy was performed."
+                                           }
+                                       ],
+                         "impact":  "Operators and future AI sessions may believe the global skill was refreshed when a dry run only simulated the action.",
+                         "recommendation":  "Track whether the install branch actually executed and print a distinct dry-run completion message under -WhatIf.",
+                         "verification_ids":  [
+                                                  "VER-20260515-003"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+                                       "Verified closed on 2026-05-15: -WhatIf output no longer includes Installed skill to and includes an explicit dry-run completion message."
+                                   ]
+                     },
+                     {
+                         "id":  "CHR-20260515-004",
+                         "severity":  "Low",
+                         "dimension":  "Documentation and maintainability",
+                         "title":  "usage guide has a duplicated notice before the title",
+                         "status":  "verified-closed",
+                         "confidence":  "High",
+                         "evidence":  [
+                                           {
+                                               "type":  "file",
+                                               "path":  "docs/usage.md",
+                                               "line":  1,
+                                               "note":  "A code-health-reports notice appears before the # Usage heading."
+                                           },
+                                           {
+                                               "type":  "file",
+                                               "path":  "docs/usage.md",
+                                               "line":  93,
+                                               "note":  "The same notice also appears in the intended closure-artifact section."
+                                           }
+                                       ],
+                         "impact":  "The first rendered heading is no longer the document title, and duplicated guidance makes the usage guide look less polished.",
+                         "recommendation":  "Remove the line-1 duplicate and keep the closure-artifact note in its contextual section.",
+                         "verification_ids":  [
+                                                  "VER-20260515-004"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+                                       "Verified closed on 2026-05-15: docs/usage.md starts with # Usage and the report-directory notice appears once."
+                                   ]
+                     },
+                     {
+                         "id":  "CHR-20260515-005",
+                         "severity":  "Low",
+                         "dimension":  "Testing and quality gates",
+                         "title":  "smoke test leaves an empty .tmp parent directory",
+                         "status":  "verified-closed",
+                         "confidence":  "High",
+                         "evidence":  [
+                                           {
+                                               "type":  "command",
+                                               "path":  "command-log.md",
+                                               "note":  "After test-harness-smoke.ps1, Test-Path .\\code-health-review-harness\\.tmp returned True, and the directory was empty."
+                                           },
+                                           {
+                                               "type":  "file",
+                                               "path":  "scripts/test-harness-smoke.ps1",
+                                               "line":  66,
+                                               "note":  "Cleanup removes child directories but not the empty .tmp parent."
+                                           }
+                                       ],
+                         "impact":  "The project stays functionally correct, but repeated local validation leaves ignored workspace residue and weakens the expectation that smoke tests clean up after themselves.",
+                         "recommendation":  "Remove .tmp when it is empty after cleanup, or document that the parent cache directory is intentionally retained.",
+                         "verification_ids":  [
+                                                  "VER-20260515-005"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+                                       "Verified closed on 2026-05-15: smoke test passes and .tmp is absent after cleanup."
+                                   ]
+                     }
+                 ]
+}
