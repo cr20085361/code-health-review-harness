@@ -14,3 +14,7 @@ jobs:
       - name: Verify project structure
         shell: pwsh
         run: .\scripts\verify-project.ps1
+
+      - name: Run smoke test
+        shell: pwsh
+        run: .\scripts\test-harness-smoke.ps1

@@ -12,9 +12,11 @@ Use this skill to run a professional, full-dimensional code health review for a 
 
 - Answer in Chinese unless the user requests another language.
 - Review the current workspace by default.
+- Support short Chinese prompts such as `对当前工程做一次全面代码体检`.
 - Prefer evidence over opinion: cite files, modules, configs, commands, tests, docs, and observable behavior.
 - Separate strengths from risks. A good report should not be only a bug list.
 - Produce management summary, engineering detail, score table, and P0/P1/P2 roadmap.
+- If the user asks for `chat-only output`, `仅聊天不落盘`, `不要保存报告`, or `只在聊天里输出`, keep the full report in chat and skip artifact writes.
 - Do not modify product code, configs, database, deployment, dependencies, or generated artifacts unless the user explicitly changes the task from review to implementation.
 
 ## Required Resource Loading

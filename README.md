@@ -1,6 +1,6 @@
 # Code Health Review Harness
 
-> Evidence-based, full-dimensional engineering review for software projects, packaged as an installable agent skill.
+> 面向软件工程全维度体检的证据驱动型评审 harness，可作为可安装的 agent skill 使用。
 
 `code-health-review-harness` 把架构、功能、后端、前端、数据、安全、测试、性能、运维、供应链、文档和迭代经济性 12 个维度的工程检视固化成可重复执行的 review 流程。一句话触发，一次执行，一份带证据、评分、风险和 P0/P1/P2 迭代建议的报告。
 
@@ -9,6 +9,13 @@
 - 默认只读 + 验证类命令，destructive 命令默认禁止
 - 每次 review 产出可追溯工件（metadata、findings、iteration plan、verification matrix、command log、artifacts）
 - 稳定 ID（CHR-/ITER-/VER-）让多轮 AI 会话能续接迭代而不丢失上下文
+
+## 当前归档版本
+
+- 当前归档标签：`v0.1.1`
+- 归档日期：2026-05-18
+- 版本摘要：修复 smoke 与 safe-check 流程漂移；将 smoke 纳入 CI 门禁；同步中文文档与最新评审工件。
+- 版本变化详情见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 推荐触发语
 
@@ -138,7 +145,7 @@ code-health-reports/YYYYMMDD-HHMM-<repo-slug>/
 .\scripts\verify-project.ps1
 ```
 
-它检查必要文件、`SKILL.md` frontmatter（`name` 与 `description`）等。CI 在 `windows-latest` 上对每个 push/PR 运行这一脚本。
+它检查必要文件、`SKILL.md` frontmatter（`name` 与 `description`）等。当前 validate workflow 会在 `windows-latest` 上对每个 push/PR 运行这一脚本，并继续执行 `test-harness-smoke.ps1`。
 
 ### 跑端到端 smoke
 
@@ -146,7 +153,7 @@ code-health-reports/YYYYMMDD-HHMM-<repo-slug>/
 .\scripts\test-harness-smoke.ps1
 ```
 
-smoke 会构造伪造目录、调用 `collect-repo-facts.ps1`、`run-safe-checks.ps1`、`new-review-session.ps1`、`summarize-review-history.ps1`，并断言关键不变量。运行后会清理 `.tmp/`。
+smoke 会构造伪造目录、调用 `collect-repo-facts.ps1`、`run-safe-checks.ps1`、`new-review-session.ps1`、`summarize-review-history.ps1`，并断言关键不变量。运行后会清理 `.tmp/`。该脚本现在也是 CI 的行为级门禁之一。
 
 ## 12 个评审维度
 

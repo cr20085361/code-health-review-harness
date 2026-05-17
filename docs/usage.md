@@ -34,6 +34,15 @@
 Run a full code health review for this repository with architecture, security, testing, maintainability, and roadmap recommendations.
 ```
 
+## Short trigger prompts
+
+也支持更短的中文触发语，例如：
+
+```text
+代码体检一下这个仓库
+帮我看下这个工程健康度
+```
+
 ## 推荐输入
 
 如果你希望报告更聚焦，可以补充：
@@ -54,6 +63,8 @@ Run a full code health review for this repository with architecture, security, t
 - 后续迭代路线。
 - 已运行命令与结果。
 - 未验证项和人工确认项。
+
+如果你只希望在聊天中查看结果而不落盘，可在请求中加入 `chat-only output`、`仅聊天不落盘`、`不要保存报告` 或 `只在聊天里输出`。
 
 ## 资源刷新模式
 

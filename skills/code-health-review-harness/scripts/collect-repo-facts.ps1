@@ -25,6 +25,7 @@ function Test-IgnoredPath {
     $Normalized = "\$RelativePath\"
     $Ignored = @(
         "\.git\",
+        "\code-health-reports\",
         "\node_modules\",
         "\.venv\",
         "\venv\",
@@ -45,30 +46,58 @@ function Test-IgnoredPath {
     return $false
 }
 
+function Resolve-InputPath {
+    param([string]$Path)
+
+    if ([System.IO.Path]::IsPathRooted($Path)) {
+        return [System.IO.Path]::GetFullPath($Path)
+    }
+
+    return [System.IO.Path]::GetFullPath((Join-Path (Get-Location).Path $Path))
+}
+
 function Invoke-GitText {
     param(
         [string[]]$Arguments,
         [string]$WorkingDirectory
     )
 
-    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    $GitCommand = Get-Command git -ErrorAction SilentlyContinue
+    if (-not $GitCommand) {
         return $null
     }
 
-    Push-Location $WorkingDirectory
-    try {
-        $Text = & git @Arguments 2>$null | Out-String
-        if ($LASTEXITCODE -ne 0) {
-            return $null
+    $StartInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $StartInfo.FileName = $GitCommand.Source
+    $StartInfo.WorkingDirectory = $WorkingDirectory
+    $StartInfo.UseShellExecute = $false
+    $StartInfo.RedirectStandardOutput = $true
+    $StartInfo.RedirectStandardError = $true
+    $StartInfo.CreateNoWindow = $true
+    $StartInfo.Arguments = (($Arguments | ForEach-Object {
+        if ($_ -match '[\s"]') {
+            '"' + ($_.Replace('"', '\"')) + '"'
         }
-        return $Text.Trim()
+        else {
+            $_
+        }
+    }) -join ' ')
+
+    $Process = New-Object System.Diagnostics.Process
+    $Process.StartInfo = $StartInfo
+    $null = $Process.Start()
+    $StandardOutput = $Process.StandardOutput.ReadToEnd()
+    $null = $Process.StandardError.ReadToEnd()
+    $Process.WaitForExit()
+
+    if ($Process.ExitCode -ne 0) {
+        return $null
     }
-    finally {
-        Pop-Location
-    }
+
+    return $StandardOutput.Trim()
 }
 
-$Root = (Resolve-Path $RepoPath).Path
+$Root = (Resolve-Path (Resolve-InputPath -Path $RepoPath)).Path
 $AllFiles = Get-ChildItem -Path $Root -Recurse -File -Force -ErrorAction SilentlyContinue | ForEach-Object {
     $Relative = Get-RelativePath -BasePath $Root -FullPath $_.FullName
     if (-not (Test-IgnoredPath -RelativePath $Relative)) {
@@ -166,7 +195,7 @@ $Facts = [PSCustomObject]@{
 $JsonOutput = $Facts | ConvertTo-Json -Depth 8
 
 if ($OutputPath) {
-    $OutputFullPath = [System.IO.Path]::GetFullPath((Join-Path (Get-Location).Path $OutputPath))
+    $OutputFullPath = Resolve-InputPath -Path $OutputPath
     $OutputDirectory = Split-Path -Parent $OutputFullPath
     if ($OutputDirectory -and -not (Test-Path $OutputDirectory)) {
         New-Item -ItemType Directory -Path $OutputDirectory | Out-Null

@@ -24,7 +24,7 @@ function Test-IgnoredPath {
     param([string]$RelativePath)
 
     $Normalized = "\$RelativePath\"
-    foreach ($Part in @("\.git\", "\node_modules\", "\.venv\", "\venv\", "\dist\", "\build\")) {
+    foreach ($Part in @("\.git\", "\code-health-reports\", "\node_modules\", "\.venv\", "\venv\", "\dist\", "\build\", "\coverage\", "\htmlcov\", "\.pytest_cache\", "\.tmp\", "\tmp\")) {
         if ($Normalized.IndexOf($Part, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
             return $true
         }
@@ -104,6 +104,25 @@ function Get-RunArguments {
     return @("run", $ScriptName)
 }
 
+function Get-PowerShellCommand {
+    if (Get-Command pwsh -ErrorAction SilentlyContinue) { return "pwsh" }
+    if (Get-Command powershell -ErrorAction SilentlyContinue) { return "powershell" }
+    return $null
+}
+
+function Get-PowerShellArguments {
+    param(
+        [string]$PowerShellCommand,
+        [string]$ScriptPath
+    )
+
+    if ($PowerShellCommand -eq "powershell") {
+        return @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $ScriptPath)
+    }
+
+    return @("-NoProfile", "-File", $ScriptPath)
+}
+
 $Root = (Resolve-Path $RepoPath).Path
 $Results = @()
 
@@ -145,6 +164,58 @@ foreach ($PackageJson in $PackageJsonFiles) {
 
     if ($IncludeAudit -and $PackageManager -eq "npm" -and (Test-Path (Join-Path $Directory "package-lock.json"))) {
         $Results += Invoke-SafeCommand -Command "npm" -Arguments @("audit", "--json") -WorkingDirectory $Directory -Label "package:audit"
+    }
+}
+
+$PowerShellValidationScripts = @()
+$VerifyProjectScript = Join-Path $Root "scripts\verify-project.ps1"
+if (Test-Path $VerifyProjectScript) {
+    $PowerShellValidationScripts += [PSCustomObject]@{
+        label = "powershell:verify-project"
+        path = $VerifyProjectScript
+    }
+}
+
+$SmokeScript = Join-Path $Root "scripts\test-harness-smoke.ps1"
+if (Test-Path $SmokeScript) {
+    if ($env:CODE_HEALTH_HARNESS_SMOKE_RUNNING -eq "1") {
+        $Results += [PSCustomObject]@{
+            label = "powershell:test-harness-smoke"
+            command = $SmokeScript
+            workingDirectory = $Root
+            exitCode = $null
+            durationSeconds = 0
+            status = "skipped"
+            outputTail = "Skipped while smoke test is already running to avoid recursive execution."
+        }
+    }
+    else {
+        $PowerShellValidationScripts += [PSCustomObject]@{
+            label = "powershell:test-harness-smoke"
+            path = $SmokeScript
+        }
+    }
+}
+
+if ($PowerShellValidationScripts.Count -gt 0) {
+    $PowerShellCommand = Get-PowerShellCommand
+    if ($null -eq $PowerShellCommand) {
+        foreach ($Script in $PowerShellValidationScripts) {
+            $Results += [PSCustomObject]@{
+                label = $Script.label
+                command = $Script.path
+                workingDirectory = $Root
+                exitCode = $null
+                durationSeconds = 0
+                status = "skipped"
+                outputTail = "PowerShell command not found: pwsh/powershell"
+            }
+        }
+    }
+    else {
+        foreach ($Script in $PowerShellValidationScripts) {
+            $Results += Invoke-SafeCommand -Command $PowerShellCommand -Arguments (Get-PowerShellArguments -PowerShellCommand $PowerShellCommand -ScriptPath $Script.path) -WorkingDirectory $Root -Label $Script.label
+        }
     }
 }
 

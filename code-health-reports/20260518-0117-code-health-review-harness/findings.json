@@ -1,0 +1,119 @@
+﻿{
+    "schema_version":  "1.0",
+    "review_id":  "CHR-20260518-0117-code-health-review-harness",
+    "repo":  "code-health-review-harness",
+    "created_at":  "2026-05-18T01:17:49",
+    "findings":  [
+                     {
+                         "id":  "CHR-20260518-001",
+                         "severity":  "Medium",
+                         "dimension":  "Testing and quality gates",
+                         "title":  "CI only validates repository structure, not workflow behavior",
+                         "status":  "verified-closed",
+                         "confidence":  "High",
+                         "evidence":  [
+                                          {
+                                              "type":  "file",
+                                              "path":  ".github/workflows/validate.yml",
+                                              "note":  "The workflow now runs scripts/verify-project.ps1 and scripts/test-harness-smoke.ps1."
+                                          },
+                                          {
+                                              "type":  "command",
+                                              "path":  "command-log.md",
+                                              "note":  "Local parity validation passed for verify-project.ps1 and test-harness-smoke.ps1 after the workflow update."
+                                          }
+                                      ],
+                         "impact":  "Before the fix, behavior-level regressions could merge even when the repository structure still looked valid.",
+                         "recommendation":  "Keep smoke deterministic and CI-safe; extend with more assertions only when they stay fast and stable.",
+                         "verification_ids":  [
+                                                  "VER-20260518-001"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+                                      "2026-05-18: Closed in the current worktree after adding the smoke step to .github/workflows/validate.yml and rerunning the equivalent local commands."
+                                   ]
+                     },
+                     {
+                         "id":  "CHR-20260518-002",
+                         "severity":  "Medium",
+                         "dimension":  "Architecture and modularity",
+                         "title":  "PowerShell safe-check discovery is still repository-specific",
+                         "status":  "open",
+                         "confidence":  "High",
+                         "evidence":  [
+                                          {
+                                              "type":  "file",
+                                              "path":  "skills/code-health-review-harness/scripts/run-safe-checks.ps1",
+                                              "note":  "The current implementation explicitly discovers scripts/verify-project.ps1 and scripts/test-harness-smoke.ps1."
+                                          }
+                                      ],
+                         "impact":  "Other PowerShell repositories can still under-report safe validation entry points unless the harness is modified again.",
+                         "recommendation":  "Introduce an explicit allowlist/config file or a stricter naming convention for safe PowerShell validation scripts.",
+                         "verification_ids":  [
+                                                  "VER-20260518-002"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+
+                                   ]
+                     },
+                     {
+                         "id":  "CHR-20260518-003",
+                         "severity":  "Medium",
+                         "dimension":  "Testing and quality gates",
+                         "title":  "Helper logic lacks unit-level regression tests and schema validation",
+                         "status":  "open",
+                         "confidence":  "High",
+                         "evidence":  [
+                                          {
+                                              "type":  "file",
+                                              "path":  "scripts/test-harness-smoke.ps1",
+                                              "note":  "Current regression coverage is concentrated in the end-to-end smoke script."
+                                          },
+                                          {
+                                              "type":  "file",
+                                              "path":  "docs/roadmap.md",
+                                              "note":  "Pester and richer validation remain roadmap work rather than current repository gates."
+                                          }
+                                      ],
+                         "impact":  "Path resolution, ignore filtering, discovery rules, and artifact schema drift are harder to localize than they would be with unit tests.",
+                         "recommendation":  "Extract pure helper functions to a lib layer and add Pester plus structured artifact/schema checks.",
+                         "verification_ids":  [
+                                                  "VER-20260518-003"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+
+                                   ]
+                     },
+                     {
+                         "id":  "CHR-20260518-004",
+                         "severity":  "Low",
+                         "dimension":  "Operations and delivery",
+                         "title":  "Cross-platform support claim is broader than automated coverage",
+                         "status":  "open",
+                         "confidence":  "Medium",
+                         "evidence":  [
+                                          {
+                                              "type":  "file",
+                                              "path":  "README.md",
+                                              "note":  "The README documents Windows PowerShell 5.1/7 and pwsh on macOS/Linux as supported runtimes."
+                                          },
+                                          {
+                                              "type":  "file",
+                                              "path":  ".github/workflows/validate.yml",
+                                              "note":  "Automation currently runs only on windows-latest."
+                                          }
+                                      ],
+                         "impact":  "Path, line-ending, or shell-specific regressions may only surface when a non-Windows user runs the harness.",
+                         "recommendation":  "Add at least one non-Windows pwsh CI leg or narrow the support statement until it is validated.",
+                         "verification_ids":  [
+                                                  "VER-20260518-004"
+                                              ],
+                         "owner":  "unassigned",
+                         "notes":  [
+
+                                   ]
+                     }
+                 ]
+}
