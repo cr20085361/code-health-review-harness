@@ -41,6 +41,9 @@ Run a full code health review for this repository with architecture, security, t
 ```text
 代码体检一下这个仓库
 帮我看下这个工程健康度
+帮我看看这个仓库有没有明显问题
+给这个项目做个体检
+检查一下这个仓库的工程健康度
 ```
 
 ## 推荐输入

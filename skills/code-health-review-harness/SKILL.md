@@ -1,6 +1,6 @@
 ---
 name: code-health-review-harness
-description: "Use when the user asks for 代码体检, 工程检视, 全维度代码分析, 代码优缺点分析, 架构优缺点, 软件工程审计, 后续迭代建议, code health review, architecture review, engineering audit, maintainability review, security review, testing review, or repository quality assessment. Produces evidence-based scores, strengths, risks, and P0/P1/P2 roadmap recommendations."
+description: "Use when the user asks for 代码体检, 项目体检, 仓库体检, 工程体检, 工程检视, 工程健康检查, 项目健康检查, 仓库健康检查, 工程健康度分析, 项目健康度分析, 仓库分析, 项目分析, 全维度代码分析, 代码优缺点分析, 架构优缺点, 软件工程审计, 代码审查一下, 帮我看看这个仓库, 帮我看看这个工程, 后续迭代建议, code health review, repository health check, repo review, architecture review, engineering audit, maintainability review, security review, testing review, or repository quality assessment. Produces evidence-based scores, strengths, risks, and P0/P1/P2 roadmap recommendations."
 argument-hint: "Repository or current workspace to review"
 ---
 
@@ -13,6 +13,7 @@ Use this skill to run a professional, full-dimensional code health review for a 
 - Answer in Chinese unless the user requests another language.
 - Review the current workspace by default.
 - Support short Chinese prompts such as `对当前工程做一次全面代码体检`.
+- Also support colloquial prompts such as `帮我看看这个仓库`, `检查一下这个项目健康度`, and `给这个工程做个体检`.
 - Prefer evidence over opinion: cite files, modules, configs, commands, tests, docs, and observable behavior.
 - Separate strengths from risks. A good report should not be only a bug list.
 - Produce management summary, engineering detail, score table, and P0/P1/P2 roadmap.
